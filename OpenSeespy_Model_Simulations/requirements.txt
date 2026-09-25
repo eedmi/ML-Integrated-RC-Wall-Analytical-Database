@@ -1,0 +1,9 @@
+# Notebook metadata records Python 3.9.23 for the original analysis environment.
+# Exact package versions were not embedded in the supplied source archive.
+openseespy
+numpy
+scipy
+pandas
+matplotlib
+openpyxl
+jupyter
