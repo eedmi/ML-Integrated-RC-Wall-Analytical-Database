@@ -1,4 +1,4 @@
-# WSH6 OpenSeesPy analytical-database model
+# An Analytical Database for Reinforced Concrete Structural Walls Based on an Experimentally Validated ML-Integrated Modeling Framework
 
 This folder contains the reproducible OpenSeesPy model used to generate the 620-case WSH6-centered analytical database accompanying the manuscript **“An Analytical Database for Reinforced Concrete Structural Walls Based on an Experimentally Validated ML-Integrated Modeling Framework.”**
 
