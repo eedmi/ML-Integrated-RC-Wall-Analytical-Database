@@ -13,7 +13,6 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 - `Configurations_model_input.xlsx` — 31 reinforcement configurations used by the FE workflow
 - `WSH6_measured.csv` — experimental WSH6 response used in the reference-model comparison
 - `PublicUse/MLmodel/110-Walls/` — ML calibration models and scaling/support files
-- `MODEL_DOCUMENTATION.md` — detailed implementation documentation
 
 ## Running the workflow
 
@@ -52,7 +51,7 @@ $$L_{sp}=0.022f_y d_b$$
 
 where $$d_b$$ is longitudinal-bar diameter. Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model.
 
-Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as $$E_c=4700\sqrt{f_c}$$ MPa. The strain at peak stress of the confined concrete is supplied by the previously developed ML model and is used as the calibration parameter of the finite element model. The adopted effective shear modulus $$G_{\mathrm{eff}}=0.02E_c$$. Longitudinal reinforcing bars are modeled using the OpenSees `ReinforcingSteel` material. Bar buckling is represented using the Gomes and Appleton formulation, and low-cycle fatigue is included through the corresponding fatigue formulation implemented in `ReinforcingSteel`. The OpenSees `MinMax` wrapper material is used to simulate tensile rupture when the specified ultimate tensile strain is exceeded.
+Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as $$E_c=4700\sqrt{f_c}$$ MPa. The strain at peak stress of the confined concrete is supplied by the previously developed ML model and is used as the calibration parameter of the finite element model. Longitudinal reinforcing bars are modeled using the OpenSees `ReinforcingSteel` material. Bar buckling is represented using the Gomes and Appleton formulation, and low-cycle fatigue is included through the corresponding fatigue formulation implemented in `ReinforcingSteel`. The OpenSees `MinMax` wrapper material is used to simulate tensile rupture when the specified ultimate tensile strain is exceeded. Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model. The adopted effective shear modulus $$G_{\mathrm{eff}}=0.02E_c$$.
 
 For the fiber-section discretization, the confined boundary regions are discretized into fibers in the in-plane direction. A constant fiber thickness is used to discretize the web region, while a single fiber is used in the out-of-plane direction. The reinforcing-fiber layout varies according to the reinforcement configuration defined in `Configurations_model_input.xlsx`.
 
