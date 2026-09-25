@@ -26,7 +26,7 @@ The notebook uses relative paths only and creates its own `outputs/` directory.
 
 ## Numerical implementation details
 
-The nonlinear wall model is implemented in OpenSeesPy using fiber-based `dispBeamColumn` elements with a `Linear` geometric transformation. The first nonlinear element has a length of \(2L_P\), where
+The nonlinear wall model is implemented in OpenSeesPy using fiber-based `dispBeamColumn` elements with a `Linear` geometric transformation. The first nonlinear element has a length of ($$2L_P$$), where
 
 $$
 L_P = 0.27 l_w (1-ALR)
