@@ -13,6 +13,7 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 - `Configurations_model_input.xlsx` — 31 reinforcement configurations used by the FE workflow
 - `WSH6_measured.csv` — experimental WSH6 response used in the reference-model comparison
 - `PublicUse/MLmodel/110-Walls/` — ML calibration models and scaling/support files
+- `WSH6_Master_Database_620_final_GitHub.xlsx` — Master database of 620 analytical specimens, including input parameters, response metrics, failure mode classifications, model-error bounds, and ML applicability indicators.
 
 ## Running the workflow
 
