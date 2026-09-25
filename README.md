@@ -20,7 +20,7 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 1. Create a Python 3.9 environment.
 2. Install the packages listed in `requirements.txt`.
 3. Start Jupyter in this directory.
-4. Run `WSH6_analytical_database_620_clean.ipynb` from top to bottom.
+4. Run `RC_analytical_database_generation.ipynb`.
 
 The notebook uses relative paths only and creates its own `outputs/` directory.
 
