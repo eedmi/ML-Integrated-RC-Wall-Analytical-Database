@@ -42,101 +42,27 @@ $$
 
 where the variables are defined as:
 
-$$
-l_w = \text{wall length}
-$$
+$$l_w = \text{wall length}$$
+$$P = \text{axial force}$$
+$$A_w = \text{wall cross-sectional area}$$
+$$f_y = \text{reinforcement yield strength}$$
+$$f'_c = \text{concrete compressive strength}$$
+$$\rho_t = \text{horizontal web reinforcement ratio}$$
+$$M,\;V = \text{moment and shear force at the wall base}$$
 
-$$
-P = \text{axial force}
-$$
-
-$$
-A_w = \text{wall cross-sectional area}
-$$
-
-$$
-f_y = \text{reinforcement yield strength}
-$$
-
-$$
-f'_c = \text{concrete compressive strength}
-$$
-
-$$
-\rho_t = \text{horizontal web reinforcement ratio}
-$$
-
-and
-
-$$
-M,\;V = \text{moment and shear force at the wall base}
-$$
-
-The remaining nonlinear wall height is divided into equal-length displacement-based beam-column elements following the same discretization procedure. For the 620 analytical cases considered in the database, the nonlinear wall region is discretized into 3–6 `dispBeamColumn` elements, depending on the case-specific plastic-hinge and strain-penetration lengths.
+The remaining nonlinear wall height is divided into equal-length displacement-based beam-column elements following the same discretization procedure. For the 620 analytical cases considered in the database, the nonlinear wall region is discretized into `dispBeamColumn` elements, depending on the case-specific plastic-hinge and strain-penetration lengths.
 
 The effect of anchorage deformation, including slip and extension of reinforcing bars anchored into the foundation, is represented by adding a strain-penetration length to the wall height. In the OpenSeesPy implementation:
 
-$$
-L_{sp}=0.022f_y d_b
-$$
+$$L_{sp}=0.022f_y d_b$$
 
-where
+where $$d_b$$ is longitudinal-bar diameter. Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model.
 
-$$
-d_b = \text{longitudinal-bar diameter}
-$$
+Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as $$E_c=4700\sqrt{f'_c}\;\text{MPa}$$. The strain at peak stress of the confined concrete is supplied by the previously developed ML model and is used as the calibration parameter of the finite element model. The adopted effective shear modulus $$G_{\mathrm{eff}}=0.02E_c$$. Longitudinal reinforcing bars are modeled using the OpenSees `ReinforcingSteel` material. Bar buckling is represented using the Gomes and Appleton formulation, and low-cycle fatigue is included through the corresponding fatigue formulation implemented in `ReinforcingSteel`. The OpenSees `MinMax` wrapper material is used to simulate tensile rupture when the specified ultimate tensile strain is exceeded.
 
-Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model. For the analyses included in the present database, the adopted effective shear modulus is:
+For the fiber-section discretization, the confined boundary regions are discretized into fibers in the in-plane direction. A constant fiber thickness is used to discretize the web region, while a single fiber is used in the out-of-plane direction. The reinforcing-fiber layout varies according to the reinforcement configuration defined in `Configurations_model_input.xlsx`.
 
-$$
-G_{\mathrm{eff}}=0.02E_c
-$$
-
-The corresponding lateral spring stiffness used in the OpenSeesPy implementation is:
-
-$$
-K_s=0.02E_cA_w
-$$
-
-Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as:
-
-$$
-E_c=4700\sqrt{f'_c}\;\text{MPa}
-$$
-
-The strain at peak stress of the confined concrete is supplied by the previously developed ML model and is used as the calibration parameter of the finite element model.
-
-Longitudinal reinforcing bars are modeled using the OpenSees `ReinforcingSteel` material. Bar buckling is represented using the Gomes and Appleton formulation, and low-cycle fatigue is included through the corresponding fatigue formulation implemented in `ReinforcingSteel`. The OpenSees `MinMax` wrapper material is used to simulate tensile rupture when the specified ultimate tensile strain is exceeded.
-
-For the fiber-section discretization, the confined boundary regions are discretized into 32 fibers in the in-plane direction. A constant fiber thickness is used to discretize the web region, while a single fiber is used in the out-of-plane direction. The reinforcing-fiber layout varies according to the reinforcement configuration defined in `Configurations_model_input.xlsx`.
-
-All analytical cases are subjected to the same cyclic displacement protocol adopted for WSH6. For each target displacement, the nominal displacement increment is defined as:
-
-$$
-dU=\frac{\mathrm{maxU}}{150}
-$$
-
-The gravity analysis uses the `NormDispIncr` convergence test with a tolerance of:
-
-$$
-10^{-12}
-$$
-
-and a maximum of 10 iterations, together with the `Newton` solution algorithm.
-
-The cyclic analysis uses `NormDispIncr` with a tolerance of:
-
-$$
-10^{-6}
-$$
-
-and a maximum of 1000 iterations. `NewtonLineSearch` is used as the primary solution algorithm.
-
-If convergence is not achieved for a displacement increment, the following fallback sequence is attempted:
-
-`ModifiedNewton → KrylovNewton → Broyden → BFGS`
-
-Following a successful fallback step, the solution algorithm is reset to `NewtonLineSearch`. If all algorithms fail for a given increment, the displacement loop associated with that target is terminated and the analysis proceeds to the next target in the loading protocol.
+All analytical specimens are subjected to the same cyclic displacement protocol adopted for WSH6. For each target displacement, the nominal displacement increment is defined as $$dU=\frac{\mathrm{maxU}}{150}$$. The gravity analysis uses the `NormDispIncr` convergence test with a tolerance of $$10^{-12}$$ and a maximum of 10 iterations, together with the `Newton` solution algorithm. The cyclic analysis uses `NormDispIncr` with a tolerance of $$10^{-6}$$ and a maximum of 1000 iterations. `NewtonLineSearch` is used as the primary solution algorithm. If convergence is not achieved for a displacement increment, the following fallback sequence is attempted: `ModifiedNewton → KrylovNewton → Broyden → BFGS`. Following a successful fallback step, the solution algorithm is reset to `NewtonLineSearch`. If all algorithms fail for a given increment, the displacement loop associated with that target is terminated and the analysis proceeds to the next target in the loading protocol.
 
 The complete material definitions, section discretization, loading protocol, recorder definitions, and analysis procedures are provided in `run_FEmodel_webconf.py` and `run_FEmodel_boundconf.py`.
 
