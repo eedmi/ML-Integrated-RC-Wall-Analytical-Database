@@ -2,18 +2,29 @@
 
 This folder contains the reproducible OpenSeesPy model used to generate the 620-specimen analytical database accompanying the manuscript **“An Analytical Database for Reinforced Concrete Structural Walls Based on an Experimentally Validated ML-Integrated Modeling Framework.”**
 
-## Main files
+## Repository structure
 
-- `RC_analytical_database_generation.ipynb` — end-to-end database-generation workflow
+The main analytical database and configuration summary are provided in the repository root. The OpenSeesPy implementation and supporting files used to generate the analytical database are provided in `OpenSeespy_Model_Simulations/`, while the complete cyclic force-displacement histories are provided in `Hysteretic_Responses/`.
+
+### Main database files
+
+- `WSH6_Master_Database_620_final_GitHub.xlsx` — master database of 620 analytical specimens, including input parameters, response metrics, failure mode classifications, model-error bounds, and ML applicability indicators
+- `Configurations_final_GitHub.xlsx` — summary of the 31 reinforcement configurations and their cross-section visualizations used to construct the analytical database
+
+### OpenSeesPy model and simulation files
+
+The following files are located in `OpenSeespy_Model_Simulations/`:
+
+- `RC_analytical_database_generation.ipynb` — database-generation workflow
 - `run_FEmodel_webconf.py` — FE driver for web-reinforcement configurations
 - `run_FEmodel_boundconf.py` — FE driver for boundary-reinforcement configurations
 - `wsh6_reference.py` — fixed WSH6 geometry and material reference properties
 - `predict_peakconfstrain_110.py` — ML-assisted confined-concrete peak-strain predictor
-- `fema_p2208_classification.py` — FEMA P-2208 failure mode classification routine
+- `fema_p2208_classification.py` — implementation of the FEMA P-2208 failure mode classification criteria
 - `Configurations_model_input.xlsx` — 31 reinforcement configurations used by the FE workflow
 - `WSH6_measured.csv` — experimental WSH6 response used in the reference-model comparison
 - `PublicUse/MLmodel/110-Walls/` — ML calibration models and scaling/support files
-- `WSH6_Master_Database_620_final_GitHub.xlsx` — Master database of 620 analytical specimens, including input parameters, response metrics, failure mode classifications, model-error bounds, and ML applicability indicators.
+- `requirements.txt` — Python dependencies required to run the workflow
 
 ## Running the workflow
 
