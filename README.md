@@ -42,13 +42,7 @@ $$
 
 where the variables are defined as:
 
-$$l_w = \text{wall length}$$
-$$P = \text{axial force}$$
-$$A_w = \text{wall cross-sectional area}$$
-$$f_y = \text{reinforcement yield strength}$$
-$$f'_c = \text{concrete compressive strength}$$
-$$\rho_t = \text{horizontal web reinforcement ratio}$$
-$$M,\;V = \text{moment and shear force at the wall base}$$
+$$l_w = \text{wall length}$$, $$P = \text{axial force}$$, $$A_w = \text{wall cross-sectional area}$$, $$f_y = \text{reinforcement yield strength}$$, $$f'_c = \text{concrete compressive strength}$$, $$\rho_t = \text{horizontal web reinforcement ratio}$$, $$M,\;V = \text{moment and shear force at the wall base}$$.
 
 The remaining nonlinear wall height is divided into equal-length displacement-based beam-column elements following the same discretization procedure. For the 620 analytical cases considered in the database, the nonlinear wall region is discretized into `dispBeamColumn` elements, depending on the case-specific plastic-hinge and strain-penetration lengths.
 
