@@ -4,7 +4,7 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 
 ## Main files
 
-- `WSH6_analytical_database_620_clean.ipynb` — end-to-end database-generation workflow
+- `RC_analytical_database_generation.ipynb` — end-to-end database-generation workflow
 - `run_FEmodel_webconf.py` — FE driver for web-reinforcement configurations
 - `run_FEmodel_boundconf.py` — FE driver for boundary-reinforcement configurations
 - `wsh6_reference.py` — fixed WSH6 geometry and material reference properties
