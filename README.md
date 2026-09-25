@@ -9,7 +9,7 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 - `run_FEmodel_boundconf.py` — FE driver for boundary-reinforcement configurations
 - `wsh6_reference.py` — fixed WSH6 geometry and material reference properties
 - `predict_peakconfstrain_110.py` — ML-assisted confined-concrete peak-strain predictor
-- `failure_type.py` — FEMA P-2208 failure mode classification routine
+- `fema_p2208_classification.py` — FEMA P-2208 failure mode classification routine
 - `Configurations_model_input.xlsx` — 31 reinforcement configurations used by the FE workflow
 - `WSH6_measured.csv` — experimental WSH6 response used in the reference-model comparison
 - `PublicUse/MLmodel/110-Walls/` — ML calibration models and scaling/support files
