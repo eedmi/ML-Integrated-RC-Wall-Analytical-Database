@@ -26,49 +26,35 @@ The notebook uses relative paths only and creates its own `outputs/` directory.
 
 ## Numerical implementation details
 
-## Numerical implementation details
+The wall is modeled using a two-dimensional finite element model with a stack of line displacement-based elements using the distributed plasticity formulation. OpenSees displacement-based beam-column elements (`dispBeamColumn`) are used with two Gauss-Legendre integration points per element and fiber sections assigned to the integration points.
 
-The wall is modeled using a two-dimensional finite element model with a stack of line displacement-based elements using the distributed plasticity formulation. OpenSees displacement-based beam-column elements (`dispBeamColumn`) are used with two Gauss–Legendre integration points per element and fiber sections assigned to the integration points.
+To address deformation localization associated with material softening, the regularization technique adopted in the previously validated modeling framework is retained. The region adjacent to the critical section, corresponding to the bottom-most nonlinear element of the cantilever wall, is modeled with a length equal to two times the estimated plastic-hinge length, `2L_p`.
 
-To address deformation localization associated with material softening, the regularization technique adopted in the previously validated modeling framework is retained. The region adjacent to the critical section, corresponding to the bottom-most nonlinear element of the cantilever wall, is modeled with a length equal to two times the estimated plastic-hinge length, \(2L_P\). The plastic-hinge length is calculated as
+The plastic-hinge length is calculated as:
 
-$$
-L_P =
-0.27l_w
-\left(1-\frac{P}{A_w f'_c}\right)
-\left(1-\frac{f_y\rho_t}{f'_c}\right)
-\left(\frac{M}{Vl_w}\right)^{0.45}
-$$
+`L_p = 0.27 l_w (1 - P/(A_w f'_c)) (1 - f_y rho_t/f'_c) (M/(V l_w))^0.45`
 
-where \(l_w\) is the wall length, \(P\) is the axial force, \(A_w\) is the wall cross-sectional area, \(f_y\) is the reinforcement yield strength, \(f'_c\) is the concrete compressive strength, \(\rho_t\) is the horizontal web reinforcement ratio, and \(M\) and \(V\) are the moment and shear force at the wall base, respectively.
+where `l_w` is the wall length, `P` is the axial force, `A_w` is the wall cross-sectional area, `f_y` is the reinforcement yield strength, `f'_c` is the concrete compressive strength, `rho_t` is the horizontal web reinforcement ratio, and `M` and `V` are the moment and shear force at the wall base, respectively.
 
-The remaining nonlinear wall height is divided into equal-length displacement-based beam-column elements following the same discretization procedure. For the 620 analytical cases considered in the database, this results in 3–6 nonlinear `dispBeamColumn` elements, depending on the case-specific plastic-hinge and strain-penetration lengths.
+The remaining nonlinear wall height is divided into equal-length displacement-based beam-column elements following the same discretization procedure. For the 620 analytical cases considered in the database, the nonlinear wall region is discretized into 3-6 `dispBeamColumn` elements, depending on the case-specific plastic-hinge and strain-penetration lengths.
 
-The effect of anchorage deformation, including slip and extension of reinforcing bars anchored into the foundation, is represented by adding a strain-penetration length, \(L_{sp}\), to the wall height. In the OpenSeesPy implementation,
+The effect of anchorage deformation, including slip and extension of reinforcing bars anchored into the foundation, is represented by adding a strain-penetration length, `L_sp`, to the wall height. In the OpenSeesPy implementation:
 
-$$
-L_{sp}=0.022f_y d_b
-$$
+`L_sp = 0.022 f_y d_b`
 
-where \(d_b\) is the longitudinal-bar diameter.
+where `d_b` is the longitudinal-bar diameter.
 
-Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model. For the analyses included in the present database, an effective shear modulus of
+Shear behavior is modeled as uncoupled from the flexural and axial behavior using a linear shear spring element at the base of the model. For the analyses included in the present database, an effective shear modulus of:
 
-$$
-G_{\mathrm{eff}}=0.02E_c
-$$
+`G_eff = 0.02 E_c`
 
-is adopted, resulting in the implemented lateral spring stiffness
+is adopted. The corresponding lateral spring stiffness used in the OpenSeesPy implementation is:
 
-$$
-K_s=0.02E_cA_w.
-$$
+`K_s = 0.02 E_c A_w`
 
-Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as
+Plain and confined concrete are modeled using the OpenSees `Concrete04` material. The concrete elastic modulus is calculated as:
 
-$$
-E_c=4700\sqrt{f'_c}\ \text{MPa}.
-$$
+`E_c = 4700 sqrt(f'_c) MPa`
 
 The strain at peak stress of the confined concrete is supplied by the previously developed ML model and is used as the calibration parameter of the finite element model.
 
@@ -76,15 +62,17 @@ Longitudinal reinforcing bars are modeled using the OpenSees `ReinforcingSteel` 
 
 For the fiber-section discretization, the confined boundary regions are discretized into 32 fibers in the in-plane direction. A constant fiber thickness is used to discretize the web region, while a single fiber is used in the out-of-plane direction. The reinforcing-fiber layout varies according to the reinforcement configuration defined in `Configurations_model_input.xlsx`.
 
-All analytical cases are subjected to the same cyclic displacement protocol adopted for WSH6. For each target displacement, the nominal displacement increment is defined as
+All analytical cases are subjected to the same cyclic displacement protocol adopted for WSH6. For each target displacement, the nominal displacement increment is defined as:
 
-`dU = maxU / 150`.
+`dU = maxU / 150`
 
-The gravity analysis uses the `NormDispIncr` convergence test with a tolerance of \(10^{-12}\) and a maximum of 10 iterations, together with the `Newton` solution algorithm. The cyclic analysis uses `NormDispIncr` with a tolerance of \(10^{-6}\) and a maximum of 1000 iterations. `NewtonLineSearch` is used as the primary solution algorithm.
+The gravity analysis uses the `NormDispIncr` convergence test with a tolerance of `1e-12` and a maximum of 10 iterations, together with the `Newton` solution algorithm.
+
+The cyclic analysis uses `NormDispIncr` with a tolerance of `1e-6` and a maximum of 1000 iterations. `NewtonLineSearch` is used as the primary solution algorithm.
 
 If convergence is not achieved for a displacement increment, the following fallback sequence is attempted:
 
-`ModifiedNewton → KrylovNewton → Broyden → BFGS`
+`ModifiedNewton -> KrylovNewton -> Broyden -> BFGS`
 
 Following a successful fallback step, the solution algorithm is reset to `NewtonLineSearch`. If all algorithms fail for a given increment, the displacement loop associated with that target is terminated and the analysis proceeds to the next target in the loading protocol.
 
