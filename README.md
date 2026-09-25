@@ -24,8 +24,41 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 
 The notebook uses relative paths only and creates its own `outputs/` directory.
 
+## Numerical implementation details
 
+The nonlinear wall model is implemented in OpenSeesPy using fiber-based `dispBeamColumn` elements with a `Linear` geometric transformation. The first nonlinear element has a length of \(2L_P\), where
 
-See `MODEL_DOCUMENTATION.md` for element discretization, integration points, fiber discretization, constitutive models, strain penetration, shear-spring formulation, loading increments, convergence criteria, fallback algorithms, recorder outputs, and limitations.
+\[
+L_P = 0.27l_w(1-ALR)\left(1-\frac{f_y\rho_t}{f'_c}\right)
+\left(\frac{M}{Vl_w}\right)^{0.45}.
+\]
+
+The remaining nonlinear wall height is divided into equal-length elements according to the same discretization procedure used in the previously validated model. Across the 620 analytical cases, the wall is represented by 3–6 nonlinear `dispBeamColumn` elements.
+
+Each nonlinear element uses two-point Legendre integration with the same fiber section assigned at both integration points. The section consists of two confined boundary-core concrete patches discretized with 32 × 1 fibers each, together with unconfined cover and web-concrete patches. For the fixed WSH6 geometry, the section contains 558 concrete fibers; the reinforcing-fiber layout varies according to the reinforcement configuration.
+
+Concrete is modeled using `Concrete04`, while longitudinal reinforcement is modeled using `ReinforcingSteel` with the `-GABuck` buckling and `-CMFatigue` low-cycle-fatigue formulations. `MinMax` wrappers impose the tensile rupture-strain limit. No additional constitutive regularization is applied beyond the adopted element and fiber discretization, which follows the previously validated implementation.
+
+Strain penetration is represented by extending the effective wall height by
+
+\[
+L_{sp}=0.022 f_y d_b,
+\]
+
+rather than through a separate bond-slip element. Shear response is represented by an uncoupled zero-length spring at the wall base with elastic lateral stiffness
+
+\[
+K_s = 0.02E_cA_g.
+\]
+
+All analytical cases are subjected to the same WSH6 cyclic displacement protocol. For each target displacement, the nominal displacement increment is defined as `dU = maxU/150`.
+
+Gravity analysis uses a `NormDispIncr` convergence test with a tolerance of \(10^{-12}\) and a maximum of 10 iterations with the `Newton` algorithm. The cyclic analysis uses `NormDispIncr` with a tolerance of \(10^{-6}\) and a maximum of 1000 iterations. `NewtonLineSearch` is used as the primary solution algorithm. If convergence is not achieved, the following fallback sequence is applied:
+
+`ModifiedNewton → KrylovNewton → Broyden → BFGS`
+
+Following a successful fallback step, the analysis returns to `NewtonLineSearch`. If all algorithms fail for a given increment, the displacement loop associated with that target is terminated and the analysis proceeds to the next target in the loading protocol.
+
+The complete material definitions, section generation, loading sequence, recorder definitions, and analysis procedures are provided directly in `run_FEmodel_webconf.py` and `run_FEmodel_boundconf.py`.
 
 Note: The OpenSeespy model uses a linear uncoupled shear spring. FEMA P-2208 failure type classification labels in the generated database are therefore post-processed engineering assessments. They are not direct simulations of physical shear failure.
