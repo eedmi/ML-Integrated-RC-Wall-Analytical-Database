@@ -28,7 +28,7 @@ The notebook uses relative paths only and creates its own `outputs/` directory.
 
 The wall is modeled using a two-dimensional finite element model with a stack of line displacement-based elements using the distributed plasticity formulation. OpenSees displacement-based beam-column elements (`dispBeamColumn`) are used with two Gauss-Legendre integration points per element and fiber sections assigned to the integration points.
 
-To address deformation localization associated with material softening, the regularization technique adopted in the previously validated modeling framework is retained. The region adjacent to the critical section, corresponding to the bottom-most nonlinear element of the cantilever wall, is modeled with a length equal to two times the estimated plastic-hinge length: $$ 2L_p $$
+To address deformation localization associated with material softening, the regularization technique adopted in the previously validated modeling framework is retained. The region adjacent to the critical section, corresponding to the bottom-most nonlinear element of the cantilever wall, is modeled with a length equal to two times the estimated plastic-hinge length: $$2L_p$$
 
 The plastic-hinge length is calculated as:
 
