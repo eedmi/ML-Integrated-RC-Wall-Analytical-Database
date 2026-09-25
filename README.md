@@ -25,8 +25,8 @@ This folder contains the reproducible OpenSeesPy model used to generate the 620-
 
 The notebook uses relative paths only and creates its own `outputs/` directory.
 
-## Important interpretation note
 
-The OpenSees model uses a linear uncoupled shear spring. FEMA P-2208 labels in the generated database are therefore post-processed engineering classifications. They are not direct simulations of physical shear failure.
 
 See `MODEL_DOCUMENTATION.md` for element discretization, integration points, fiber discretization, constitutive models, strain penetration, shear-spring formulation, loading increments, convergence criteria, fallback algorithms, recorder outputs, and limitations.
+
+Note: The OpenSeespy model uses a linear uncoupled shear spring. FEMA P-2208 failure type classification labels in the generated database are therefore post-processed engineering assessments. They are not direct simulations of physical shear failure.
